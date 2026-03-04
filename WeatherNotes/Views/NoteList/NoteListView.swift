@@ -2,6 +2,7 @@ import SwiftUI
 
 struct NoteListView: View {
     @StateObject private var viewModel: NoteListViewModel
+    @State private var isPresentingAddNote = false
     
     init(viewModel: NoteListViewModel = NoteListViewModel()) {
         _viewModel = StateObject(wrappedValue: viewModel)
@@ -30,6 +31,11 @@ struct NoteListView: View {
             }
             .toolbar(.hidden, for: .navigationBar)
         }
+        .sheet(isPresented: $isPresentingAddNote, onDismiss: {
+            viewModel.loadNotes()
+        }) {
+            AddNoteView()
+        }
     }
     
     private var header: some View {
@@ -46,7 +52,7 @@ struct NoteListView: View {
             Spacer()
             
             Button {
-                // Will be implemented in feature/add-note
+                isPresentingAddNote = true
             } label: {
                 Image(systemName: "plus")
                     .font(.system(size: 18, weight: .bold))
