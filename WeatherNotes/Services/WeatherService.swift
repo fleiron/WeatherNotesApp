@@ -5,7 +5,7 @@ final class WeatherService {
     static let shared = WeatherService()
     private init() {}
 
-    private let apiKey = "50b2311d2e9bbe6e35eb85950ffae043"
+    private let apiKey = AppConfig.weatherApiKey
     
     enum WeatherServiceError: Error, LocalizedError {
         case invalidURL
@@ -18,11 +18,18 @@ final class WeatherService {
             case .invalidURL:
                 return "Invalid URL."
             case .badResponse(let statusCode):
-                return "Bad response: \(statusCode)."
+                switch statusCode {
+                case 401:
+                    return "Weather request was not authorized (401). Please check your API key."
+                case 500...599:
+                    return "Weather service is temporarily unavailable. Please try again later."
+                default:
+                    return "Unexpected weather service response (\(statusCode)). Please try again."
+                }
             case .decodingError:
                 return "Failed to decode weather data."
             case .missingAPIKey:
-                return "Missing WeatherAPI key."
+                return "Weather service is not configured. Please provide a valid API key."
             }
         }
     }
