@@ -5,7 +5,8 @@ import SwiftUI
 struct WeatherNotesApp: App {
     var body: some Scene {
         WindowGroup {
-            EmptyView()
+            NoteListView()
+                .preferredColorScheme(.light)
         }
     }
 }
